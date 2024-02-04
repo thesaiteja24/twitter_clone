@@ -1,0 +1,42 @@
+Here Implemented Page view and can also implement it into list view just changing the word `PageView`
+
+body: Center(
+        child: Column(
+          children: <Widget>[
+            Container(
+              // color: Colors.amber[600],
+              height: 200,
+              width: 450,
+              margin: const EdgeInsets.all(10),
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  color: Colors.amber[600],
+                  border: Border.all(width: 10)),
+              child: PageView(
+                children: const [
+                  Icon(
+                    Icons.school,
+                    color: Colors.white,
+                  ),
+                  Icon(
+                    Icons.book,
+                    color: Colors.white,
+                  ),
+                  Icon(
+                    Icons.business,
+                    color: Colors.white,
+                  )
+                ],
+              ),
+            ),
+            const Text(
+              'You have pushed the button this many times:',
+            ),
+            Text(
+              '$_counter',
+              style: Theme.of(context).textTheme.headlineMedium,
+            ),
+          ],
+        ),
+      ),

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/rendering.dart';
+import 'package:twitter_clone/pages/first.dart';
+import 'package:twitter_clone/pages/second.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  // WidgetsFlutterBinding.ensureInitialized();S
+  // await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -33,50 +35,31 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  bool value = false;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.deepPurple,
-        title: const Text('Settings'),
+        title: const Text('Navigation'),
       ),
       body: Center(
         child: Column(
           children: <Widget>[
-            const Image(
-              width: 200,
-              height: 200,
-              image: NetworkImage(
-                'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg',
-              ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => const FirstPage()),
+                );
+              },
+              child: const Text("First Page"),
             ),
-            const SizedBox(height: 30),
-            const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: TextField(
-                decoration: InputDecoration(
-                  labelText: 'username',
-                  border: OutlineInputBorder(),
-                ),
-              ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => const SecondPage()),
+                );
+              },
+              child: const Text("Second Page"),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text('Notifications '),
-                Switch(
-                  value: value,
-                  onChanged: (newValue) {
-                    setState(() {
-                      value = newValue;
-                    });
-                  },
-                ),
-              ],
-            ),
-            ElevatedButton(onPressed: () {}, child: const Text('Save')),
           ],
         ),
       ),

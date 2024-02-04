@@ -40,3 +40,44 @@ body: Center(
           ],
         ),
       ),
+
+
+Small Practice design
+body: Center(
+        child: Column(
+          children: <Widget>[
+            const Image(
+              width: 200,
+              height: 200,
+              image: NetworkImage(
+                'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg',
+              ),
+            ),
+            const SizedBox(height: 30),
+            const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: TextField(
+                decoration: InputDecoration(
+                  labelText: 'username',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text('Notifications '),
+                Switch(
+                  value: value,
+                  onChanged: (newValue) {
+                    setState(() {
+                      value = newValue;
+                    });
+                  },
+                ),
+              ],
+            ),
+            ElevatedButton(onPressed: () {}, child: const Text('Save')),
+          ],
+        ),
+      ),

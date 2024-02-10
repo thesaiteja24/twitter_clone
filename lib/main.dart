@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:twitter_clone/providers.dart';
 import 'package:twitter_clone/signup.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -14,8 +17,9 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Twitter Clone',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        // colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
+        fontFamily: 'Cursive',
       ),
       home: const MyHomePage(title: 'Twitter Clone'),
     );
@@ -39,15 +43,20 @@ class _MyHomePageState extends State<MyHomePage> {
   final RegExp emailValid = RegExp(r"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$");
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+    print(width);
+    print(height);
     return Scaffold(
       body: Form(
         key: _signInKey,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Image(
-              image: AssetImage('assets/Logo_of_Twitter.svg.png'),
-              width: 90,
+            const FaIcon(
+              FontAwesomeIcons.twitter,
+              color: Colors.blue,
+              size: 90,
             ),
             const SizedBox(height: 20),
             const Text(
@@ -146,6 +155,9 @@ class _MyHomePageState extends State<MyHomePage> {
               },
               child: const Text('dont have and account? Sign Up here'),
             ),
+            Consumer(builder: (context, ref, child) {
+              return Text(ref.read(normalProvider));
+            })
           ],
         ),
       ),

@@ -43,10 +43,8 @@ class _MyHomePageState extends State<MyHomePage> {
   final RegExp emailValid = RegExp(r"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$");
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
-    print(width);
-    print(height);
+    // double width = MediaQuery.of(context).size.width;
+    // double height = MediaQuery.of(context).size.height;
     return Scaffold(
       body: Form(
         key: _signInKey,
@@ -157,7 +155,31 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             Consumer(builder: (context, ref, child) {
               return Text(ref.read(normalProvider));
-            })
+            }),
+            Consumer(builder: (context, ref, child) {
+              return ref.watch(messageProvider).when(
+                data: (message) {
+                  return Text(message);
+                },
+                error: ((error, stackTrace) {
+                  return const Text('Error');
+                }),
+                loading: () {
+                  return const CircularProgressIndicator();
+                },
+              );
+            }),
+            Consumer(builder: ((context, ref, child) {
+              int counter = ref.watch(counterProvider);
+              CounterNotifier counterController =
+                  ref.watch(counterProvider.notifier);
+              return TextButton(
+                  onPressed: () {
+                    counterController.add();
+                  },
+                  child: Text('Counter: $counter'));
+              // return Text('Counter: $counter');
+            }))
           ],
         ),
       ),

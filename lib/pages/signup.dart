@@ -1,15 +1,19 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:twitter_clone/providers/user_provider.dart';
 
-class SignUp extends StatefulWidget {
+class SignUp extends ConsumerStatefulWidget {
   const SignUp({super.key, required this.title});
 
   final String title;
 
   @override
-  State<SignUp> createState() => _SignUpState();
+  ConsumerState<SignUp> createState() => _SignUpState();
 }
 
-class _SignUpState extends State<SignUp> {
+class _SignUpState extends ConsumerState<SignUp> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   final GlobalKey<FormState> _signInKey = GlobalKey();
   // Defining controller for email and password
   final TextEditingController _emailController = TextEditingController();
@@ -28,7 +32,7 @@ class _SignUpState extends State<SignUp> {
               width: 90,
             ),
             const SizedBox(height: 20),
-            
+
             const Text(
               'Sign up to Twitter',
               style: TextStyle(
@@ -101,11 +105,23 @@ class _SignUpState extends State<SignUp> {
                 borderRadius: BorderRadius.circular(30),
               ),
               child: TextButton(
-                  onPressed: () {
+                  onPressed: () async {
                     if (_signInKey.currentState!.validate()) {
-                      print(
-                          'Email: ${_emailController.text}'); // Retrieving data
-                      print('Password: ${_passwordController.text}');
+                      try {
+                        await _auth.createUserWithEmailAndPassword(
+                          email: _emailController.text,
+                          password: _passwordController.text,
+                        );
+                        await ref
+                            .read(userProvider.notifier)
+                            .signUp(_emailController.text);
+                        if (!mounted) return;
+                        Navigator.pop(context);
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(e.toString())),
+                        );
+                      }
                     }
                   },
                   child: const Text(

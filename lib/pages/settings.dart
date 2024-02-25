@@ -1,5 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:twitter_clone/providers/user_provider.dart';
 
 class Settings extends ConsumerStatefulWidget {
@@ -23,6 +27,29 @@ class _SettingsState extends ConsumerState<Settings> {
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
+            GestureDetector(
+              onTap: () async {
+                final ImagePicker picker = ImagePicker();
+                // Pick an image.
+                final XFile? pickedImage =
+                    await picker.pickImage(source: ImageSource.gallery);
+                if(pickedImage != null){
+                  ref.read(userProvider.notifier).updateImg(File(pickedImage.path));
+                }
+              },
+              child: CircleAvatar(
+                foregroundImage: NetworkImage(
+                  currentUser.user.profilePic,
+                ),
+                radius: 80,
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            const Center(
+              child: Text('Tap Image to Change'),
+            ),
             TextFormField(
               decoration: const InputDecoration(
                 label: Text("Enter your name"),
@@ -31,7 +58,9 @@ class _SettingsState extends ConsumerState<Settings> {
             ),
             TextButton(
               onPressed: () {
-                ref.read(userProvider.notifier).updateName(_nameController.text);
+                ref
+                    .read(userProvider.notifier)
+                    .updateName(_nameController.text);
               },
               child: const Text('Update'),
             ),

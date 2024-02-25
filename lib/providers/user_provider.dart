@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:twitter_clone/models/user.dart';
 
@@ -33,6 +36,7 @@ class UserNotifier extends StateNotifier<LocalUser> {
           ),
         );
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseStorage _stroage = FirebaseStorage.instance;
 
   Future<void> logIn(String email) async {
     QuerySnapshot response = await _firestore
@@ -67,17 +71,29 @@ class UserNotifier extends StateNotifier<LocalUser> {
             dynamic>)); // Firebase defines this data as an object but it a map so 'as map' is used
   }
 
-  void logOut() {
-    state = const LocalUser(
-      id: "error",
-      user: FirebaseUser(email: "error", name: "error", profilePic: "error"),
-    );
-  }
-
   Future<void> updateName(String newName) async {
     await _firestore.collection("users").doc(state.id).update(
       {"name": newName},
     );
     state = state.copyWith(user: state.user.copyWith(name: newName));
+  }
+
+  Future<void> updateImg(File img) async {
+    Reference ref = _stroage.ref().child("users").child(state.id);
+    TaskSnapshot snapshot = await ref.putFile(img);
+    String profilePicURL = await snapshot.ref.getDownloadURL();
+
+    await _firestore.collection("users").doc(state.id).update(
+      {"profilePic": profilePicURL},
+    );
+    state =
+        state.copyWith(user: state.user.copyWith(profilePic: profilePicURL));
+  }
+
+  void logOut() {
+    state = const LocalUser(
+      id: "error",
+      user: FirebaseUser(email: "error", name: "error", profilePic: "error"),
+    );
   }
 }

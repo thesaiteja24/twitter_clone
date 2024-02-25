@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:twitter_clone/models/tweet.dart';
 import 'package:twitter_clone/pages/create.dart';
+import 'package:twitter_clone/providers/tweet_provider.dart';
 import 'package:twitter_clone/providers/user_provider.dart';
 import 'package:twitter_clone/pages/settings.dart';
 
@@ -26,12 +28,28 @@ class Home extends ConsumerWidget {
           );
         }),
       ),
-      body: Column(
-        children: [
-          Text(currentUser.user.email),
-          Text(currentUser.user.name),
-        ],
-      ),
+      body: ref.watch(feedProvider).when(
+          data: (List<Tweet> tweets) {
+            return ListView.builder(
+                itemCount: tweets.length,
+                itemBuilder: (context, count) {
+                  return ListTile(
+                    leading: CircleAvatar(
+                      foregroundImage: NetworkImage(tweets[count].profilePic),
+                    ),
+                    title: Text(
+                      tweets[count].name,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    subtitle: Text(
+                      tweets[count].content,
+                      style: const TextStyle(fontSize: 16, color: Colors.black),
+                    ),
+                  );
+                });
+          },
+          error: (error, stackTrace) => const Center(child: Text("error")),
+          loading: () => const CircularProgressIndicator()),
       drawer: Drawer(
           backgroundColor: Colors.white,
           child: Column(
